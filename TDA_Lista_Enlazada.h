@@ -31,13 +31,18 @@ int PrimeroLista(Lista *lista);
 int UltimoLista(Lista *lista);
 bool isvacia(Lista *lista);
 int recuperar_elemento(Lista *lista, int posicion);
+Lista *ingresardatos(Lista *L, FILE *p, int n);
 
 //Funciones que se pueden usar para la lista
 void suma_elementos(Lista *L);
-void par_impar(Lista *L);
+void par_impar(Lista *L, FILE *q);
 Lista *elevar_elementos_a_x(Lista *L, int exp);
+Lista *cambiarelementos(Lista *L, int a, int b);
+void introducirdatos(Lista *L, FILE *q);
 
 /*Funciones*/
+
+/*Funcion que crea los nodos*/
 nodo *Crear_nodo(){
     nodo *n;
     n = (nodo*)malloc(sizeof(nodo));
@@ -45,12 +50,16 @@ nodo *Crear_nodo(){
     n->sig = NULL;
     return n;
 }
+
+/*Funcion que crea la lista*/
 Lista *Crearlista(){
      Lista *L;
     L = (Lista*)malloc(sizeof(Lista));
     L->head = NULL;
     return L;
 }
+
+/*Funcion que inserta los nodos al final de la lista ya creada*/
 Lista *Insertal_al_final(Lista *lista, int val){
     nodo *aux;
     nodo *nuevo;
@@ -69,6 +78,8 @@ Lista *Insertal_al_final(Lista *lista, int val){
     }
     return lista;
 }
+
+/*Funcion que inserta los nodos de la lista enlazada al comienzo de esta*/
 Lista *Insertar_al_inicio(Lista *lista, int val){
     nodo *nuevo;
     nodo *aux = lista->head;
@@ -83,6 +94,8 @@ Lista *Insertar_al_inicio(Lista *lista, int val){
     }
     return lista;
 }
+
+/*Funcion que elimina el ultimo nodo de la lista enlazada*/
 Lista *Eliminar_al_Final(Lista *lista){
     nodo *aux = lista -> head;
     nodo *aux2;
@@ -99,6 +112,8 @@ Lista *Eliminar_al_Final(Lista *lista){
     }
     return lista;
 }
+
+/*Funcion que elimina el primer nodo de la lista enlazada*/
 Lista *Eliminar_al_Inicio(Lista *lista){
     nodo *aux = lista -> head;
     if(lista -> head != NULL){
@@ -111,6 +126,8 @@ Lista *Eliminar_al_Inicio(Lista *lista){
     }
     return lista;
 }
+
+/*Funcion que retorna la posicion del valor que buscamos en la lista enlazada*/
 int Buscar_elemento(Lista *lista, int val){
     nodo *aux;
     int pos = 0;
@@ -124,6 +141,8 @@ int Buscar_elemento(Lista *lista, int val){
     }
     return pos;
 }
+
+/*Funcion que nos retorna el largo de la lista enlazada*/
 int Largo_lista(Lista *lista){
     nodo *aux; //Puntero tipo Lista el cual nos permitira movernos dentro de la lista 
     int count = 0;
@@ -134,6 +153,8 @@ int Largo_lista(Lista *lista){
     }
     return count;
 }
+
+/*Funcion que actualiza el valor en la posicion indicada de la lista enlazada*/
 Lista *Actualizar_Lista(Lista *lista, int posicion, int valor){
   nodo *aux;
   int pos = 0;
@@ -150,6 +171,8 @@ Lista *Actualizar_Lista(Lista *lista, int posicion, int valor){
   }
   return lista;
 }
+
+/*Muestra todo los datos de lista enlazada*/
 void mostrar_elementos(Lista *lista){
   nodo *aux;
   aux = lista->head;
@@ -161,6 +184,8 @@ void mostrar_elementos(Lista *lista){
   printf("NULL");
   printf("\n");
 }
+
+/*Funcion que retorna el primer elemento de la lista enlazada*/
 int PrimeroLista(Lista *lista){
   nodo *aux;
   int elemento = 0, pos = 0;
@@ -176,6 +201,8 @@ int PrimeroLista(Lista *lista){
   }
   return elemento;
 }
+
+/*Funcion que retorna el ultimo elemento de la lista enlazada*/
 int UltimoLista(Lista *lista){
   nodo *aux;
   int elemento = 0, pos = 0, n = 0;
@@ -192,6 +219,8 @@ int UltimoLista(Lista *lista){
   }
   return elemento;
 }
+
+/*Funcion que verifica si la lista esta vacia retorna True = 1 si es verdadero y por otro lado False = 0 si esta no lo esta*/
 bool isvacia(Lista *lista){
   nodo *aux;
   aux = lista->head;
@@ -204,10 +233,36 @@ bool isvacia(Lista *lista){
     return 0;
   }
 }
+
+/*Funcion que recupera un elemento en la posicion indicada*/
 int recuperar_elemento(Lista *lista, int posicion){
-  
+  int cont = 0, elemento = 0;
+  nodo *aux;
+  aux = lista->head;
+  while (aux->sig!= NULL)
+  { 
+    cont = cont + 1;
+    if (cont == posicion)
+    {
+      elemento = aux->valor;
+    }
+    aux = aux->sig;
+  }
+  return elemento;
 }
+
+/*Funcion que sirve para introducir los datos de un archivo a la lista enlazada*/
+Lista *ingresardatos(Lista *L, FILE *p, int n){
+  int datos;
+  for(int i = 0; i <= n; i++){
+    fscanf(p, "%d", &datos);
+    L  = Insertal_al_final(L, datos);
+  }
+  return L;
+}
+
 /*Funciones extras que se pueden utilizar para las listas*/
+
 
 void suma_elementos(Lista *L){
   int suma = 0;
@@ -219,15 +274,16 @@ void suma_elementos(Lista *L){
   }
   printf("La suma de todos los elementos de el arreglo del arreglo dinamico: %d\n", suma);
 }
-void par_impar(Lista *L){
+
+void par_impar(Lista *L, FILE *q){
   nodo *aux;
   aux = L->head;
   while(aux->sig != NULL){
     if((aux->valor % 2) == 0){
-      printf("El numero %d es par\n", aux->valor);
+      fprintf(q, "El numero %d es par\n", aux->valor);
     }
     else{
-      printf("El numero %d es impar\n", aux->valor);
+      fprintf(q, "El numero %d es impar\n", aux->valor);
     }
   aux = aux->sig;
   }
@@ -238,6 +294,23 @@ Lista *elevar_elementos_a_x(Lista *L, int exp){
   while(aux->sig != NULL){
     aux->valor = pow(aux->valor, exp);
     aux = aux->sig;
+  }
+  return L;
+}
+
+Lista *cambiarelementos(Lista *L, int a, int b){
+  nodo *aux1, *aux2;
+  int aux3;
+  aux1 = L->head;
+  aux2 = L->head;
+  while(aux1->sig && aux2->sig != NULL){
+    if(aux1->valor == a && aux2->valor == b){
+      aux3 = aux1->valor;
+      aux1->valor = aux2->valor;
+      aux2->valor = aux3;
+    }
+  aux1 = aux1->sig;
+  aux2 = aux2->sig;
   }
   return L;
 }
