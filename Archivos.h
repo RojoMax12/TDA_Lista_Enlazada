@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include "TDA_Lista_Enlazada.h"
 
+/*Encabezado de funciones*/
 FILE *abrirarchivoleer(char *nomA);
+FILE *abrirarchivoescrib(char *nombre);
+void introducirdatos(Lista *L, FILE *q);
 
+/*Funcion para abrir un archivo en modo lectura*/
 FILE *abrirarchivoleer(char *nomA){
   FILE *p;
   p = fopen(nomA, "r");
@@ -15,30 +19,28 @@ FILE *abrirarchivoleer(char *nomA){
   return p;
 }
 
-
-Lista *ingresardatos(Lista *L, FILE *p, int n){
-  int datos;
-  for(int i = 0; i <= n; i++){
-    fscanf(p, "%d", &datos);
-    L  = Insertal_al_final(L, datos);
+/*Funcion para abrir un archivo en modo escritura*/
+FILE *abrirarchivoescrib(char *nombre){
+  FILE *p;
+  p = fopen(nombre, "w");
+  if(p != NULL){
+    printf("El archivo a sido correctamente creado\n");
   }
-  return L;
+  else{
+    printf("Error al crear el archivo el archivo\n");
+  }
+  return p;
 }
 
-
-Lista *cambiarelementos(Lista *L, int a, int b){
-  nodo *aux1, *aux2;
-  int aux3;
-  aux1 = L->head;
-  aux2 = L->head;
-  while(aux1->sig && aux2->sig != NULL){
-    if(aux1->valor == a && aux2->valor == b){
-      aux3 = aux1->valor;
-      aux1->valor = aux2->valor;
-      aux2->valor = aux3;
-    }
-  aux1 = aux1->sig;
-  aux2 = aux2->sig;
+/*Funcion que se usa con un archivo tipo "w" el cual se podra escribir los datos recolectados*/
+void introducirdatos(Lista *L, FILE *q){
+  nodo *aux;
+  aux = L->head;
+  while (aux->sig != NULL)
+  {
+    fprintf(q, "%d->", aux->valor);
+    aux = aux->sig;
   }
-  return L;
+  fprintf(q,"NULL\n");
 }
+
